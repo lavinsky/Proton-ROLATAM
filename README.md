@@ -1,3 +1,28 @@
+# GE-Proton11-11-WVT0 — WinVerifyTrust forced-success fork
+
+> [!IMPORTANT]
+> **Fork-specific change:** this repository is an unofficial fork based exactly on the upstream `GE-Proton11-11` tag. It intentionally changes Wine's builtin `wintrust.dll` so that `WinVerifyTrust()` returns `ERROR_SUCCESS (0)` immediately, before any trust-provider verification is performed.
+>
+> **Exactly what was changed:**
+> - `patches/wine-hotfixes/pending/wintrust-force-success.patch` inserts an unconditional `return ERROR_SUCCESS;` at the start of `WinVerifyTrust()` in `dlls/wintrust/wintrust_main.c`, after the existing local declarations.
+> - `patches/protonprep-valve-staging.sh` applies that patch near the end of GE-Proton's Wine patch stage, before `autoreconf` / `make_requests`.
+> - `VERSION` is changed from `GE-Proton11-11` to `GE-Proton11-11-WVT0` so builds are clearly distinguishable from upstream GE-Proton.
+> - No other Wine API or GE-Proton subsystem is directly modified by this fork.
+>
+> **Behavior:** every direct call to `WinVerifyTrust()` returns `0`. `WinVerifyTrustEx()` is not directly patched, but GE-Proton/Wine's implementation delegates to `WinVerifyTrust()`, so it also observes a successful result.
+>
+> **Validated binary equivalent:** before creating this source fork, the official `GE-Proton11-11-x86_64` release was downloaded and its official SHA-512 was verified. We patched only the exported `WinVerifyTrust` entry point in both builtin `wintrust.dll` architectures and tested the result successfully:
+> - x86_64 entry point: `31 c0 c3` (`xor eax,eax; ret`)
+> - i386 entry point: `31 c0 c2 0c 00` (`xor eax,eax; ret 12`)
+> - 64-bit `rundll32.exe` loaded `C:\windows\system32\wintrust.dll` as builtin and exited with code `0`.
+> - WoW64/32-bit `rundll32.exe` loaded `C:\windows\syswow64\wintrust.dll` as builtin and exited with code `0`.
+>
+> Official `GE-Proton11-11-x86_64.tar.gz` SHA-512 used for that validation: `45721a7b625b2404d8896bb5e2a8b87fc9623a394873a6dd6b900c839681d5c01ec694ca00d003fc9c733c5f6c5648af8171985656f9fa47e20999fbebdbe235`.
+>
+> Everything below this notice is the original upstream GE-Proton README unless explicitly changed by this fork. Upstream GE-Proton is not responsible for this modification or for support of this fork.
+
+---
+
 > [!Caution]
 >  **Myself (GloriousEggroll) and this project (GE-Proton) are not affiliated with any other websites related to GE-Proton. There is no existing website for GE-Proton other than this GitHub repository.**
 

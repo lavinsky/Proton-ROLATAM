@@ -1,0 +1,12 @@
+--- a/dlls/wintrust/wintrust_main.c
++++ b/dlls/wintrust/wintrust_main.c
+@@ -667,6 +667,9 @@
+     LONG err = ERROR_SUCCESS;
+     WINTRUST_DATA *actionData = ActionData;
+ 
++    /* GE-Proton WVT0: intentionally bypass trust-provider evaluation. */
++    return ERROR_SUCCESS;
++
+     TRACE("(%p, %s, %p)\n", hwnd, debugstr_guid(ActionID), ActionData);
+     dump_wintrust_data(ActionData);
+ 

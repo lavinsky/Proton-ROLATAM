@@ -581,6 +581,9 @@ apply_all_in_dir() {
     echo "WINE: -HOTFIX- Add Bluetooth LE GATT and WinRT BLE support"
     apply_all_in_dir "../patches/wine-hotfixes/bluetooth-le/"
 
+    echo "WINE: WVT0 force WinVerifyTrust to return ERROR_SUCCESS (0)"
+    apply_patch "../patches/wine-hotfixes/pending/wintrust-force-success.patch"
+
     echo "WINE: RUN AUTOCONF TOOLS/MAKE_REQUESTS"
     autoreconf -f
     ./tools/make_requests
